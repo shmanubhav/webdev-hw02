@@ -45,6 +45,65 @@ defmodule Practice.Calc do
     end
   end
 
+  def evalPrefix(pre, stk) do
+    if pre == [] do
+      stk
+    else
+      head = hd(pre)
+      case head do
+        {:num, numb} -> evalPrefix(tl(pre), [numb]++stk)
+        {:op, sym} ->
+          el1 = hd(stk)
+          el2 = hd(tl(stk))
+          case sym do
+            "+" -> evalPrefix(tl(pre), [el1+el2]++(tl(tl(stk))))
+            "-" -> evalPrefix(tl(pre), [el1-el2]++(tl(tl(stk))))
+            "*" -> evalPrefix(tl(pre), [el1*el2]++(tl(tl(stk))))
+            "/" -> evalPrefix(tl(pre), [el1/el2]++(tl(tl(stk))))
+          end
+      end
+    end
+  end
+
+  def postfixToPrefix(post, stk) do
+    if post == [] do
+      List.flatten(stk)
+    else
+      head = hd(post)
+      case head do
+        {:num, _} -> postfixToPrefix(tl(post), [[head]]++stk);
+        {:op, _} ->
+          el1 = hd(stk)
+          el2 = hd(tl(stk))
+          postfixToPrefix(tl(post), [[head,el2,el1]]++tl(tl(stk)))
+        _ -> stk 
+      end
+    end
+  end
+
+  def eval(y,acc) do
+    {_, y} = y
+    acc<>y
+  end
+
+  def getPostfix(expr) do
+    expr
+    |> String.split(~r/\s+/)
+    |> Enum.map(&tag/1)
+    |> infixToPostfix([],[])
+    |> IO.inspect()
+    #|> Enum.reduce(&eval/2)
+  end
+      
+  def getPrefix(expr) do
+    expr
+    |> String.split(~r/\s+/)
+    |> Enum.map(&tag/1)
+    |> infixToPostfix([],[])
+    |> postfixToPrefix([])
+    |> IO.inspect()
+  end     
+
   def calc(expr) do
     # This should handle +,-,*,/ with order of operations,
     # but doesn't need to handle parens.
@@ -52,9 +111,12 @@ defmodule Practice.Calc do
     |> String.split(~r/\s+/)
     |> Enum.map(&tag/1)
     |> infixToPostfix([],[])
-    #|> hd
-    #|> parse_float
-    #|> :math.sqrt()
+    |> postfixToPrefix([])
+    |> Enum.reverse()
+    |> evalPrefix([])
+    |> hd
+    |> round()
+    #|> :erlang.float_to_binary([decimals: 2])
 
     # Hint:
     # expr

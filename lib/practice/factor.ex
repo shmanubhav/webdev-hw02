@@ -22,8 +22,7 @@ defmodule Practice.Factor do
   end
 
   def factor(x) do
-    x = parse_float(x)
-    Enum.join(factor(x, [], 2, x), "x")
-    #factor(x, [], 2, x)
+    x = Practice.Factor.parse_float(x)
+    Enum.join(factor(x, [], 2, x), " x ")
   end
 end

@@ -12,7 +12,6 @@ defmodule Practice do
   end
 
   def calc(expr) do
-    # This is more complex, delegate to lib/practice/calc.ex
     Practice.Calc.calc(expr)
   end
 
@@ -23,5 +22,4 @@ defmodule Practice do
   def palindrome(str) do
     Practice.Palindrome.palindrome(str)
   end
-  # TODO: Add a palindrome? function.
 end

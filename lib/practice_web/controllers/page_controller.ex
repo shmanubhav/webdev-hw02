@@ -13,6 +13,8 @@ defmodule PracticeWeb.PageController do
 
   def calc(conn, %{"expr" => expr}) do
     y = Practice.calc(expr)
+    #prefix = Practic.Calc.getPrefix(expr)
+    #postfix = Practice.Calc.getPostfix(expr)
     render conn, "calc.html", expr: expr, y: y
   end
 
